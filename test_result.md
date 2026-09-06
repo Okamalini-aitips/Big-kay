@@ -420,23 +420,40 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "5.0"
-  test_sequence: 5
+  version: "6.0"
+  test_sequence: 6
   run_ui: true
-  last_tested: "2026-08-03"
+  last_tested: "2026-09-06"
   web_app_tested: true
   restructured_app_tested: true
   new_ui_redesign_tested: true
+  desktop_viewport_tested: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "React Web App - Games Page (100 Games) - NEW UI REDESIGN"
+    - "React Web App - Build A Bet Page - NEW UI REDESIGN"
+    - "React Web App - Mixed Markets Page - NEW UI REDESIGN"
+    - "React Web App - Ticket Machine Page - NEW UI REDESIGN"
+    - "React Web App - Settings Page - NEW UI REDESIGN"
+    - "React Web App - Admin Cards Page (Private)"
+    - "React Web App - Admin Access Control"
+    - "React Web App - Bottom Navigation (5 Tabs) - NEW UI REDESIGN"
+    - "React Web App - Login/Register Pages"
+    - "React Web App - Admin Results/Verify/WhatsApp Tickets Pages"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
   test_completed: true
 
+  - agent: "main"
+    message: "Full-stack WEB app (FastAPI + React/Vite) is now running in this workspace (Vite served on port 3000 via a launcher shim, backend on 8001, /api proxy working). Requesting a FULL frontend verification pass across all public pages (Games, Build A Bet, Mixed Markets, Ticket Machine, Settings), bottom navigation (5 tabs), and admin flows (/admin/cards?key=okamoney_admin_2024, /admin/results?key=okamoney_admin_2024, /admin/verify, /admin/whatsapp-tickets). Also verify login/register pages render and API integration works. Test on a desktop web viewport (1920x800) since this is a web app. Confirm everything works before the user migrates to a Full Stack workspace for deployment."
+
   - agent: "testing"
     message: "✅ NEW UI REDESIGN TESTING COMPLETE (2026-08-03) - Comprehensive testing of OkaMoney AI Tips web app with NEW clean white/light premium theme on mobile viewport (390x844 iPhone 14). ALL 5 PAGES TESTED SUCCESSFULLY: 1) GAMES PAGE (/games): Header with logo + 'OkaMoney AI Tips' title ✓, WhatsApp banner (green gradient, R125/month) ✓, 'Today's Predictions' with date ✓, Search country field ✓, FREE TIER (3 games) ✓, Games grouped by competition with country flags (8 groups, 32 TIP buttons) ✓, TIP button modal with Match Analysis (league position table, last 5 games form, H2H results, predictions) ✓, SUBSCRIPTION TIER (97 games) ✓. 2) BUILD A BET PAGE (/build-a-bet): Title + info bar (Same Game Parlay • 2 Daily Betslips) ✓, Subscription prompt ✓, 2 locked betslip cards ✓. 3) MIXED MARKETS PAGE (/mixed-markets): Title + info bar (Multi-Game Parlay • 3 Daily Betslips, blue colored) ✓, Subscription prompt (blue) ✓, 3 locked betslip cards ✓. 4) TICKET MACHINE PAGE (/ticket-machine): Title ✓, Subscription Required box with 3 benefits ✓, Odds range grid (7 options) ✓, Market selection grid (4 options) ✓, Generate button disabled ✓. 5) SETTINGS PAGE (/settings): Title ✓, Daily Output section (4 items) ✓, Subscription Plans section (4 items) ✓, Algorithm section (mentions 13 markets) ✓, About section ✓. NAVIGATION: Bottom nav with 5 tabs (Tips, Build, Mixed, Machine, Settings) ✓, All links working ✓, Active tab highlighted in gold (#c19a49) ✓. API INTEGRATION: /api/games, /api/sgp, /api/mixed-parlay all working ✓. THEME: Clean white background (#ffffff), dark text (#1a1a2e), gold accents ✓. NO CRITICAL ISSUES FOUND. App is production-ready."
+
+  - agent: "testing"
+    message: "✅ COMPREHENSIVE DESKTOP TESTING COMPLETE (2026-09-06) - Full verification of OkaMoney AI Tips web app on DESKTOP viewport (1920x800) as specified in review request. ALL TESTS PASSED: 1) ROOT REDIRECT: / correctly redirects to /games ✓. 2) GAMES PAGE (/games): Header with logo + 'OkaMoney AI Tips' ✓, WhatsApp banner (green, 'PREMIUM DAILY BETSLIPS', R125/month, 'Join Now' button) ✓, 'Today's Predictions' section with Results/Today toggle ✓, Date display (Sunday 06 Sep 26) ✓, Search country field ✓, FREE TIER (3 games) section ✓, 13 competition groups with country flags and league names ✓, 3 TIP buttons ✓, TIP button opens Match Analysis modal with League Position table (Pos, P, W, D, L, GF, GA, Pts), Last 5 Games form badges, Head to Head results, Our Predictions section ✓, Modal closes correctly ✓, PREMIUM TIER (97 games) with 97 locked games ✓, Subscription/use-coins prompt ✓, API data loaded (100 match items) ✓. 3) BUILD A BET PAGE (/build-a-bet): Title 'Build A Bet' ✓, Info bar 'Same Game Parlay • 2 Daily Betslips' ✓, 2 locked betslip cards with lock icons ✓, 'Subscribe to unlock' message ✓. 4) MIXED MARKETS PAGE (/mixed-markets): Title 'Mixed Markets' ✓, Info bar 'Multi-Game Parlay • 3 Daily Betslips' (blue) ✓, 3 locked betslip cards ✓. 5) TICKET MACHINE PAGE (/ticket-machine): Title 'Ticket Machine' with subtitle ✓, Subscription required box ✓, Odds range grid (7 options: 1.80-3.00 Safe to 100+ Jackpot) ✓, Market selection grid (9 options) ✓, Generate button present ✓. 6) SETTINGS PAGE (/settings): Title 'Settings' ✓, 4 sections (Daily Output, Subscription Plans, Algorithm, About) ✓. 7) BOTTOM NAVIGATION: All 5 tabs present (Tips, Build, Mixed, Machine, Settings) ✓, All navigation links working correctly ✓. 8) LOGIN PAGE (/login): Header 'Welcome Back' ✓, Email/password inputs ✓, 'Sign In' button ✓, Register link ✓. 9) REGISTER PAGE (/register): Header 'Create Account' ✓, All form fields (name, email, password, confirm password) ✓, 'Create Account' button ✓. 10) ADMIN CARDS WITHOUT KEY (/admin/cards): Shows 'Access Denied' state ✓. 11) ADMIN CARDS WITH KEY (/admin/cards?key=okamoney_admin_2024): 'ADMIN ACCESS' badge ✓, Both tabs (BUILD A BET, MIXED PARLAY) ✓, BUILD A BET tab shows 'SAME GAME PARLAY - BUILD A BET' header with 4 cards ✓, MIXED PARLAY tab shows 'MIXED GAMES PARLAY' header with 4 cards ✓. 12) ADMIN RESULTS PAGE (/admin/results?key=okamoney_admin_2024): Renders with 'Results & Analytics' header ✓. 13) ADMIN VERIFY PAGE (/admin/verify): Renders with 'Receipt Verification' header and receipt input ✓. 14) ADMIN WHATSAPP TICKETS PAGE (/admin/whatsapp-tickets): Renders with 'WhatsApp Daily Tickets' header ✓. CONSOLE LOGS: No console errors detected ✓. NETWORK: Only 1 minor network error (Google Fonts WOFF2 file) - not critical ✓. ALL PAGES RENDER CORRECTLY, ALL NAVIGATION WORKS, ALL API DATA LOADS SUCCESSFULLY. NO CRITICAL ISSUES FOUND. WEB APP IS FULLY FUNCTIONAL AND PRODUCTION-READY."
 
 agent_communication:
   - agent: "testing"
