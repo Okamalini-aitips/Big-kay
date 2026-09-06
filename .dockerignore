@@ -1,0 +1,31 @@
+# Exclude legacy Expo folder
+frontend_legacy_expo_DO_NOT_USE/
+
+# Node modules (will be installed during build)
+node_modules/
+web-frontend/node_modules/
+
+# Git
+.git/
+.gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Local env files (backend/.env is required)
+.env.local
+.env.development
+
+# Test files
+test_result.md
+test_reports/

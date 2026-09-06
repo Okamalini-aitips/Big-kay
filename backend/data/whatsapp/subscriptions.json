@@ -1,0 +1,26 @@
+{
+  "subscriptions": [
+    {
+      "receipt_id": "WA-20260821-E946C7A2",
+      "user_id": "demo_user_001",
+      "user_name": "John Doe",
+      "user_email": null,
+      "amount": 125,
+      "purchase_date": "2026-08-21T04:59:06.198404",
+      "valid_until": "2026-09-07T00:00:00",
+      "status": "paid"
+    },
+    {
+      "receipt_id": "WA-20260821-085480DE",
+      "user_id": "demo_user_001",
+      "user_name": "John Smith",
+      "user_email": null,
+      "amount": 125,
+      "purchase_date": "2026-08-21T07:49:40.631543",
+      "valid_until": "2026-09-27T00:00:00",
+      "status": "paid",
+      "verified": true,
+      "verified_at": "2026-08-21T07:50:04.537880"
+    }
+  ]
+}

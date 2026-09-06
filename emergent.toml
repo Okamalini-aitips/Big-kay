@@ -1,0 +1,43 @@
+# Emergent Deployment Configuration
+# This is a WEB APP deployment (Vite + FastAPI), NOT an Expo mobile app
+
+[build]
+# Build the Vite frontend
+frontend_dir = "web-frontend"
+frontend_build_cmd = "yarn install && yarn build"
+frontend_output = "web-frontend/dist"
+
+# Backend uses Python/FastAPI
+backend_dir = "backend"
+backend_env = "backend/.env"
+
+[serve]
+# Serve static files from Vite build output
+static_dir = "web-frontend/dist"
+static_port = 3000
+
+# Backend API
+backend_port = 8001
+backend_cmd = "uvicorn server:app --host 0.0.0.0 --port 8001"
+
+# Proxy configuration
+api_proxy = "/api -> localhost:8001"
+
+[routing]
+# SPA fallback for React Router
+spa_fallback = true
+fallback_file = "index.html"
+
+[health]
+# Health check endpoint
+endpoint = "/health"
+port = 8001
+
+[exclude]
+# Folders to exclude from build
+paths = [
+    "frontend_legacy_expo_DO_NOT_USE",
+    "node_modules",
+    ".git",
+    "__pycache__"
+]

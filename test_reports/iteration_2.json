@@ -1,0 +1,70 @@
+{
+  "summary": "Post-engine-swap spec-conformance testing of OkaMoney AI Tips (FastAPI + Vite React, engine at services/okamoney_engine.py). Wrote a new spec-conformance suite (backend/tests/test_spec_conformance.py, 11 tests) verifying: only the 20 authoritative market names appear across /games, /sgp, /mixed-parlay, /dc-under, /dc-over, /ticket-machine/generate, /admin/whatsapp-tickets; every tip has filters_passed == total_filters (all-must-pass); no shorthand tokens (O0.5/U1.5/1H/2H) leak into market or selection strings; SGP returns 4 tickets whose legs are all from the same game and whose combined_odds land in the Safe/Value/High brackets (1.90-3.00, 3.01-4.00, 4.01-7.00); dc-under/dc-over singles represent the composite spec markets (#14 & #13); ticket machine bracket + market_type combinations return spec-only legs; admin WhatsApp Build A Bet / Mixed Parlay / Big Odds / Mega Odds tickets use spec markets; auth register + login works. Combined with the pre-existing 34-test regression suite (test_okamoney_api.py) the total run is 44/45 PASSED. Frontend smoke: /games renders grouped fixtures (Free Tier + Premium Tier), TIP buttons render, bottom nav (Tips/Build/Mixed/Machine/Settings) all visible, no red-screen. One CRITICAL bug found: Mixed Parlay ticket #3 has 4 legs but only 2 unique team-pairings (Roma vs Lazio appears 3 times + Brighton vs Fulham once) — root cause is that the daily pool of 70 games contains ~22 duplicate team-pair matchups with distinct fixture_ids, and _find_combo_distinct in okamoney_engine only dedupes on fixture_id.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET /api/mixed-parlay",
+        "issue": "Ticket #3 (bracket 6.51-8.00) returns 4 legs from only 2 unique team-pairings — Roma vs Lazio × 3 (fixture_ids 900045, 900029, 900012) + Brighton vs Fulham × 1. Violates the 'legs from DIFFERENT games' guarantee. Root cause: services/games_generator.py (get_daily_pool) creates 70 games with only ~48 unique home/away pairings; each duplicated matchup gets a unique fixture_id, so _find_combo_distinct (okamoney_engine.py:966-995) treats them as distinct games. Fix options: (a) enforce unique (home,away,league) tuples in the daily pool; or (b) dedupe by (home,away) inside _find_combo_distinct instead of by fixture_id.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "GET /api/dc-under and /api/dc-over",
+        "issue": "Individual pick objects do not expose a top-level 'market' field with the clean spec name ('Double Chance & Under 4.5 Goals' / 'Double Chance & Over 1.5 Goals'). They expose 'type': 'DC & Under 4.5' and split into dc_selection + under_selection. Bet is spec-correct but the summary label is shorthand-ish; consider setting 'market' to the full spec name for UI clarity."
+      },
+      {
+        "endpoint": "GET /api/games?limit=100",
+        "issue": "22 team-pair matchups repeat with different fixture_ids inside the same day's pool (e.g. Juventus vs Napoli appears 5 times). Even outside the Mixed Parlay bug, this causes the /games list to show duplicate fixtures to the user. Recommend a unique-matchup constraint in games_generator.py."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "GamesPage",
+        "issue": "Initial mount logs 'Error fetching games: TypeError: Failed to fetch' twice (React StrictMode double-invoke in dev). Page recovers and renders correctly, but the log noise can mask real errors. Consider adding an AbortController or a simple try/catch that ignores abort errors.",
+        "testID": "n/a",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Mixed Parlay display",
+        "issue": "Because the underlying API includes ticket #3 with 3 identical-looking legs (Roma vs Lazio), the UI will render an obviously wrong 4-leg parlay to the user. Blocking-severity for user trust once the backend bug above is fixed the UI is fine.",
+        "affected_testIDs": []
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_spec_conformance.py",
+    "/app/backend/tests/test_okamoney_api.py",
+    "/app/backend/tests/test_engine.py",
+    "/app/test_reports/pytest/pytest_results.xml",
+    "/app/test_reports/pytest/spec_conformance.xml"
+  ],
+  "action_items": [
+    "FIX (critical): dedupe Mixed Parlay legs by (home, away, league) — either in services/games_generator.py:get_daily_pool (enforce unique matchups) or in services/okamoney_engine.py:_find_combo_distinct (change 'used = set(fixture_id)' to 'used = set((home, away, league))'). After fix, re-run backend/tests/test_spec_conformance.py::test_mixed_parlay_different_games_and_in_brackets — it must pass without loosening.",
+    "MINOR: expose top-level 'market': 'Double Chance & Under 4.5 Goals' / 'Double Chance & Over 1.5 Goals' on /api/dc-under and /api/dc-over pick objects for UI-name consistency (currently only split into dc_selection + under_selection + type='DC & Under 4.5').",
+    "MINOR (optional): opt into React Router v7 future flags to silence the two warnings emitted on every page mount."
+  ],
+  "critical_code_review_comments": [
+    "okamoney_engine.py is ~1030 lines — protected THRESHOLDS + 20 evaluators are well-separated, but consider extracting each market's evaluate_* into markets/*.py once user-consent is obtained.",
+    "services/games_generator.py generates duplicate team-pair matchups; either pool-of-teams sampling is without-replacement or add a de-dup step before returning the daily pool.",
+    "_find_combo_distinct uses only fixture_id for distinctness — safe when fixture_ids map 1:1 to real fixtures, but currently fails when synthetic data creates duplicate matchups. Dedupe by (home, away) is a safer invariant for Mixed Parlay semantics."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_spec_conformance.py (new)"
+  ],
+  "success_rate": {
+    "backend": "97.7% (44/45 across test_spec_conformance.py + test_okamoney_api.py)",
+    "frontend": "100% for smoke (page renders, nav visible, no red-screen); one downstream display bug caused by the Mixed Parlay backend bug"
+  },
+  "seed_data_creation": "Registers a fresh unique user (tester+<uuid>@okamoney.com / Test1234!) each run via /api/auth/register; suite is idempotent on an empty DB.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Preview URL: https://soccer-picks-bot.preview.emergentagent.com. Two reusable pytest files at backend/tests/test_okamoney_api.py (34 regression) + backend/tests/test_spec_conformance.py (11 spec-conformance). Run: `python -m pytest backend/tests -v --tb=short`. ALLOWED_MARKETS constant in test_spec_conformance.py is the authoritative list of the 20 display names — matches DISPLAY dict at okamoney_engine.py:166. The daily pool is cached in-process (engine.get_daily_pool) so the Mixed Parlay bug is reproducible across requests within a single backend uptime — restart backend or wait to next day to reshuffle synthetic pool.",
+  "rca_of_issue": "REPRO: `curl https://soccer-picks-bot.preview.emergentagent.com/api/mixed-parlay | jq '.mixed_parlays[2].legs[].home, .mixed_parlays[2].legs[].away'` returns Roma/Lazio three times + Brighton/Fulham once. RCA: services/games_generator.py builds a 70-game daily pool by sampling from a small league-team list, producing duplicate (home, away, league) matchups with distinct fixture_ids (900045, 900029, 900012, 900013 all = Roma vs Lazio). services/mixed_parlay_generator.py delegates leg selection to services/okamoney_engine.py:build_cross_game_ticket → _find_combo_distinct, which dedupes on fixture_id, not on team-pair — so all 4 fixture_ids for Roma vs Lazio are treated as 'different games'. MITIGATION: change `used = set()` in _find_combo_distinct to key on `(it['game']['home'], it['game']['away'], it['game']['league'])` OR filter the pool to unique matchups before ticket assembly."
+}

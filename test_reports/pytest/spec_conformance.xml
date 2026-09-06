@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="11" time="3.124" timestamp="2026-08-23T12:28:32.784325+00:00" hostname="agent-env-192f28eb-94ab-4d0b-b799-8869ca560a35"><testcase classname="backend.tests.test_spec_conformance" name="test_games_all_tips_are_spec_and_pass_all_filters" time="0.267" /><testcase classname="backend.tests.test_spec_conformance" name="test_sgp_returns_four_tickets_same_game_and_in_brackets" time="0.114" /><testcase classname="backend.tests.test_spec_conformance" name="test_mixed_parlay_different_games_and_in_brackets" time="0.347"><failure message="AssertionError: mixed parlay #0 has duplicate games: [None, None, None]&#10;assert 1 == 3&#10; +  where 1 = len({None})&#10; +    where {None} = set([None, None, None])&#10; +  and   3 = len([None, None, None])">backend/tests/test_spec_conformance.py:190: in test_mixed_parlay_different_games_and_in_brackets
+    assert len(set(game_ids)) == len(game_ids), (
+E   AssertionError: mixed parlay #0 has duplicate games: [None, None, None]
+E   assert 1 == 3
+E    +  where 1 = len({None})
+E    +    where {None} = set([None, None, None])
+E    +  and   3 = len([None, None, None])</failure></testcase><testcase classname="backend.tests.test_spec_conformance" name="test_dc_under_singles_use_dc_under_market" time="0.151"><failure message="AssertionError: dc-under[0] market must be 'Double Chance &amp; Under 4.5 Goals', got ''&#10;assert '' == 'Double Chanc...der 4.5 Goals'&#10;  &#10;  - Double Chance &amp; Under 4.5 Goals">backend/tests/test_spec_conformance.py:212: in test_dc_under_singles_use_dc_under_market
+    assert m == "Double Chance &amp; Under 4.5 Goals", (
+E   AssertionError: dc-under[0] market must be 'Double Chance &amp; Under 4.5 Goals', got ''
+E   assert '' == 'Double Chanc...der 4.5 Goals'
+E     
+E     - Double Chance &amp; Under 4.5 Goals</failure></testcase><testcase classname="backend.tests.test_spec_conformance" name="test_dc_over_singles_use_dc_over_market" time="0.154"><failure message="AssertionError: dc-over[0] market must be 'Double Chance &amp; Over 1.5 Goals', got ''&#10;assert '' == 'Double Chanc...ver 1.5 Goals'&#10;  &#10;  - Double Chance &amp; Over 1.5 Goals">backend/tests/test_spec_conformance.py:226: in test_dc_over_singles_use_dc_over_market
+    assert m == "Double Chance &amp; Over 1.5 Goals", (
+E   AssertionError: dc-over[0] market must be 'Double Chance &amp; Over 1.5 Goals', got ''
+E   assert '' == 'Double Chanc...ver 1.5 Goals'
+E     
+E     - Double Chance &amp; Over 1.5 Goals</failure></testcase><testcase classname="backend.tests.test_spec_conformance" name="test_ticket_machine_options" time="0.147" /><testcase classname="backend.tests.test_spec_conformance" name="test_ticket_machine_generate[value-over15]" time="0.172" /><testcase classname="backend.tests.test_spec_conformance" name="test_ticket_machine_generate[jackpot-all]" time="0.143" /><testcase classname="backend.tests.test_spec_conformance" name="test_ticket_machine_generate[high_risk-cards]" time="0.153" /><testcase classname="backend.tests.test_spec_conformance" name="test_admin_whatsapp_all_uses_spec_markets" time="0.517" /><testcase classname="backend.tests.test_spec_conformance" name="test_auth_register_and_login" time="0.883" /></testsuite></testsuites>

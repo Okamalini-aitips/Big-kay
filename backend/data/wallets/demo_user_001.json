@@ -1,0 +1,31 @@
+{
+  "user_id": "demo_user_001",
+  "balance": 50,
+  "coin_batches": [
+    {
+      "id": "dd17319d-6076-4220-91d0-8d6110f22a18",
+      "amount": 50,
+      "remaining": 50,
+      "purchased_at": "2026-08-21T04:25:43.329396",
+      "expires_at": "2026-10-05T04:25:43.329380",
+      "is_bonus": true,
+      "reason": "Welcome bonus"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "5b719202-7cb3-459e-bcac-b2ebf88c20ed",
+      "type": "bonus",
+      "amount": 50,
+      "reason": "Welcome bonus",
+      "expiry_reset": true,
+      "new_expiry": "2026-10-05T04:25:43.329380",
+      "timestamp": "2026-08-21T04:25:43.329403"
+    }
+  ],
+  "is_subscribed": false,
+  "subscription_expires": null,
+  "daily_free_used": {},
+  "created_at": "2026-08-21T04:25:43.329374",
+  "updated_at": "2026-08-21T04:25:43.329406"
+}

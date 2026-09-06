@@ -1,0 +1,9 @@
+{
+  "name": "okamoney-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "cd ../web-frontend && yarn dev",
+    "build": "cd ../web-frontend && yarn build"
+  }
+}

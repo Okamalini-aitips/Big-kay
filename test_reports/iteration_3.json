@@ -1,0 +1,45 @@
+{
+  "summary": "End-to-end verification of the OkaMoney AI Tips Results Tracker feature (real per-market hit-rates + 3-day public view + admin analytics + WhatsApp ticket tracking). Backend: new pytest suite /app/backend/tests/test_results_tracker_api.py = 16/16 PASSED covering PUBLIC /api/results/recent (default 3, days=10 capped at 3, full day/tip/whatsapp shape, odds+selection present, whatsapp legs present); ADMIN gating (403 on wrong key for /stats, /pending, /settle, /simulate); ADMIN /stats shape (hit_rate/won/settled/roi/total_picks/by_market with hit_rate/won/total/avg_odds/roi per market); ADMIN /pending flat list with pick_id/home/away/selection/odds/result and surface=='whatsapp' entries present; ADMIN /simulate on day-2 grades all pending (post-condition: 0 pending remain that date) and stats.settled > 0 afterwards; ADMIN /settle on yesterday updates 1 tip to 'void' and GET /pending reflects the change. Frontend: /games shows 100 TIP buttons; the free-tier tip modal shows odds patterns like '@ 1.22'/'@ 1.28'/'@ 1.50' alongside % confidence (Requirement (a) met); Results tab present, when clicked shows 3-day selector (Sat/Fri/Thu), Won/Lost/Pending legend, summary bar (Total=107 Won=75 Lost=32 Hit Rate=70.1%), WhatsApp Daily Tickets group (4 tickets: Build A Bet, Mixed Parlay, Big Odds, Mega Odds) with per-leg odds ('@ 1.50' etc.), and per-game groups (31) each with tips + odds + result icon (Requirements (b) and 'whatsapp included' met). /admin/results: wrong admin key rejected (403 + 'Invalid admin key' UI message); correct key 'okamoney_admin_2024' unlocks the page showing 7/14/30/All Time range tabs, stat cards (Hit Rate 71.2%, Won/Settled 153/215, ROI -4.1%, Total 216), By-Market table with 16 markets, Settle section with 324 won/lost/void buttons and a 'Simulate (demo)' button (Requirements (c) and (d) met). No critical bugs found; all listed requirements are satisfied.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/admin/results/stats",
+        "issue": "In-memory results_tracker singleton is created twice: services/results_tracker.py:get_results_tracker() returns a module-level singleton, but server.py:42 also constructs 'results_tracker = ResultsTracker(db)' directly and uses it for older endpoints (/picks/{id}/result, /stats, /history, /pending). Both share the same MongoDB collection so behaviour is correct, but code path is inconsistent — new endpoints call the singleton factory, old ones use the top-level. Recommend using the factory everywhere."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_results_tracker_api.py",
+    "/app/test_reports/pytest/results_tracker.xml"
+  ],
+  "action_items": [
+    "OPTIONAL: unify singleton usage — replace 'results_tracker = ResultsTracker(db)' in server.py with 'get_results_tracker(db)' so old and new endpoints share one instance path.",
+    "OPTIONAL (test coverage): add an idempotency assertion for ensure_snapshot — hitting /api/results/recent twice should not duplicate picks in the pick_results collection (currently covered indirectly by the settle test that finds an already-graded pick on yesterday, but not asserted explicitly)."
+  ],
+  "critical_code_review_comments": [
+    "results_tracker.py uses random.random() in simulate_settle — non-deterministic across runs. Fine for a clearly-labelled demo, but consider seeding with the date to make simulate results reproducible day-to-day.",
+    "In ResultsTracker._day_view, 'settled' does not include 'void'/'half_won'/'half_lost' (only won+lost), which matches the summary UI on GamesPage but diverges from get_statistics where settled = total - void (includes half_won/half_lost). The mismatch is minor but worth aligning if half-results are ever produced.",
+    "server.py is now ~1640 lines — a lot of endpoint noise. Consider splitting into routers (auth, picks, wallet, whatsapp, results, admin) once feasible.",
+    "results_tracker.py:_snap_doc pins created_at to midnight of date_str; get_statistics filters by created_at >= now - N days, which means 'yesterday' picks may briefly fall outside a strict 7-day window at UTC boundaries. Not a functional bug but a subtle edge case."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_results_tracker_api.py (new, 16 tests)",
+    "/app/test_reports/pytest/results_tracker.xml (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (16/16 in test_results_tracker_api.py). Combined with the pre-existing suites this run is 60/61 total.",
+    "frontend": "100% for the results-tracker flows (tip modal odds, /games Results tab, /admin/results gating + unlock + range tabs + by-market + settle + simulate)."
+  },
+  "seed_data_creation": "The endpoints self-seed via ensure_snapshot(date) — snapshots for the last 30 days are auto-created when /api/admin/results/stats?days=30 is first hit. Tests are idempotent because ensure_snapshot skips dates that already have a marker.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Preview URL: https://soccer-picks-bot.preview.emergentagent.com. Backend test file: backend/tests/test_results_tracker_api.py (16 tests, 1.3s runtime, no external deps). Admin key from /app/memory/test_credentials.md is 'okamoney_admin_2024'. The pick_results collection persists across test runs — snapshots for the last 30 days are already created and yesterday+day-2 have been partially settled by this run. If a fresh state is desired, drop the pick_results collection between iterations. All frontend selectors use plain class names (no testID) because this is Vite React, not Expo — key CSS classes are .tip-button, .modal-content, .prediction-odds, .date-tab, .results-legend, .yesterday-stats, .wa-ticket, .range-tab, .stat-card, .market-table, .settle-btn, .btn-demo.",
+  "rca_of_issue": "No functional issues found — feature is fully working per the review spec. See minor observations in critical_code_review_comments."
+}
