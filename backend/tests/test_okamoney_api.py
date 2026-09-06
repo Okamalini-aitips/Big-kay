@@ -7,7 +7,7 @@ import time
 import uuid
 import pytest
 
-BASE_URL = "https://soccer-picks-bot.preview.emergentagent.com"
+BASE_URL = "https://repo-to-web-12.preview.emergentagent.com"
 API = f"{BASE_URL}/api"
 
 # Existing test creds (from /app/memory/test_credentials.md)

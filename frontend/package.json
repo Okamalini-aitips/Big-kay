@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "expo": "bash /app/frontend/serve-web.sh",
     "start": "cd ../web-frontend && yarn dev",
     "build": "cd ../web-frontend && yarn build"
   }

@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 import pytest
 import requests
 
-BASE_URL = os.environ.get("EXPO_BACKEND_URL", "https://soccer-picks-bot.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("EXPO_BACKEND_URL", "https://repo-to-web-12.preview.emergentagent.com").rstrip("/")
 ADMIN_KEY = "okamoney_admin_2024"
 
 

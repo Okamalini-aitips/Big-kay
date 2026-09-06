@@ -28,6 +28,6 @@
   "seed_data_creation": "Registered one unique test user per run (TEST_user_<uuid>@example.com / TestPass_123!) via /api/auth/register. All wallet/whatsapp state is created lazily by the service; no manual seeding needed.",
   "retest_needed": false,
   "should_main_agent_self_test": false,
-  "context_for_next_testing_agent": "Preview URL: https://soccer-picks-bot.preview.emergentagent.com. Reusable pytest suite at /app/backend/tests/test_okamoney_api.py — always registers a fresh unique user so it is idempotent on a clean DB. Existing test creds (test@example.com / testpassword123) may not exist in freshly forked DB; suite does not depend on them. All 34 checks pass in ~4s. Frontend was verified with Playwright at 390x844 viewport — no red screens, no console errors (only React Router v7 future-flag warnings). Vite allowedHosts:true fix from prior iteration is holding.",
+  "context_for_next_testing_agent": "Preview URL: https://repo-to-web-12.preview.emergentagent.com. Reusable pytest suite at /app/backend/tests/test_okamoney_api.py — always registers a fresh unique user so it is idempotent on a clean DB. Existing test creds (test@example.com / testpassword123) may not exist in freshly forked DB; suite does not depend on them. All 34 checks pass in ~4s. Frontend was verified with Playwright at 390x844 viewport — no red screens, no console errors (only React Router v7 future-flag warnings). Vite allowedHosts:true fix from prior iteration is holding.",
   "rca_of_issue": "N/A — no regressions found post-fork."
 }

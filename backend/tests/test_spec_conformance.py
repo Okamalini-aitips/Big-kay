@@ -21,7 +21,7 @@ import math
 import pytest
 import requests
 
-BASE_URL = "https://soccer-picks-bot.preview.emergentagent.com"
+BASE_URL = "https://repo-to-web-12.preview.emergentagent.com"
 API = f"{BASE_URL}/api"
 
 # The 20 authoritative market names (verbatim from spec / engine DISPLAY)
